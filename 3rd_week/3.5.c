@@ -16,6 +16,14 @@ int fib(int n){
 }
 
 int main(){
+	int i,sum=0,memo;
+	printf("The first 10 elements of the Fibonacci series:\n");
+	for(i=0;i<10;i++){
+		memo = fib(i);
+		printf("%d,",memo);
+		sum += memo;
+	}
+	printf("\n");
 	
-	
+	printf("Sum of them is %d.",sum);
 }
