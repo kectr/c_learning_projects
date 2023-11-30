@@ -7,7 +7,7 @@ int isPrime(double n){
 	
 	if(n<=1){return 0;}
 	
-	for(i = 2;i<sqrt(n);i++){
+	for(i = 2;i<=sqrt(n);i++){
 		if((int)(n)%i==0){
 			return 0;
 		}
@@ -19,7 +19,7 @@ int isPrime(double n){
 double sumoffactors(int n){
 	double sum  = 0;
 	int i;
-	for(i=1;i<sqrt(n);i++){
+	for(i=1;i<=sqrt(n);i++){
 		if(n%i==0){
 			sum += i + n/i;
 		}		
