@@ -21,7 +21,12 @@ double sumoffactors(int n){
 	int i;
 	for(i=1;i<=sqrt(n);i++){
 		if(n%i==0){
-			sum += i + n/i;
+			if(i*i == n){
+				sum+=i;
+			}else{
+			 sum += i + n/i;	
+			}
+			
 		}		
 	}
 	
@@ -42,7 +47,7 @@ int main(){
 			printf("%lf is prime number\n",input);
 		}else{
 			printf("%lf is not prime number\n",input);
-			printf("Sum of factors of %d is %lf\n",input,sumoffactors(input));
+			printf("Sum of factors of %lf is %lf\n",input,sumoffactors(input));
 		}		
 	}
 	printf("You entered invalid number program will be terminated!!!\n");
