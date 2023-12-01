@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct customarry {
+struct customarry{
     int x;
     int y;
     int z;

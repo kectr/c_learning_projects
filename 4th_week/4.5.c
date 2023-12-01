@@ -24,7 +24,7 @@ int main(){
 		printf("%d. costumer : %.2lf TL\n",i+1,calculatepayment(time[i]));
 		sum += calculatepayment(time[i]);
 	}
-	printf("Total revenue = %.2lf\n",sum);
+	printf("Total revenue = %.2lf\n TL",sum);
 	
 	return 0;
 }

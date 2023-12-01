@@ -10,8 +10,7 @@ int maxfunc(int arrp[],int lenp){
 		return maxfunc(arrp,lenp-1);
 	}else{
 		return arrp[lenp];
-	}
-	
+	}	
 }
 
 int main(){
@@ -23,9 +22,9 @@ int main(){
 	
 	int arr[len];
 	for(i = 0;i<len;i++){
-		printf("element - %d",i);
+		printf("element - %d : ",i);
 		scanf("%d",&arr[i]);
 	}
-	printf("largest elemnet of earay is %d",maxfunc(arr,len-1));
+	printf("largest elemnet of earay is %d\n",maxfunc(arr,len-1));
 }
 }

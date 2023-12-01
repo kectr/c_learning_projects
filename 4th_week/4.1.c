@@ -9,14 +9,14 @@ int main(){
 	while(1){
 		printf("Enter a for area:");
 		scanf("%f",&a);
-		if(a<0){
+		if(a<=0){
 			printf("You entred non-valid value. Program will be terminated!!!\n");
 			break;
 		}
 		
 		printf("Enter b for area:");
 		scanf("%f",&b);
-		if(b<0){
+		if(b<=0){
 			printf("You entred non-valid value. Program will be terminated!!!\n");
 			break;
 		}

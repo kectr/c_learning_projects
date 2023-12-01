@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 
+
+double rad(double degree){return degree*M_PI/180.0;}
+
 double mainmeasure(double x){
 	return fmod(x,2*M_PI);
 }
@@ -43,10 +46,11 @@ double cosx(double x){
 
 int main(){
 	double x;
-	printf("Enter x value for sin(x) and cos(x) as radian\n");
+	printf("Enter x value for sin(x) and cos(x) as degree\n");
 	scanf("%lf",&x);
-	printf("sin(%lf) = %lf\n",x,sinx(x));
-	printf("cos(%lf) = %lf\n",x,cosx(x));
+	
+	printf("sin(%lf) = %lf\n",x,sinx(rad(x)));
+	printf("cos(%lf) = %lf\n",x,cosx(rad(x)));
 
 	return 0;	
 }
