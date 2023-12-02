@@ -128,7 +128,7 @@ int main() {
                 printf("Hicbir ogrenci yok, lutfen giris yapin\n");
             } else {
                 for (i = 0; i < sayac; i++) {
-                	printf("%d",i);
+                	printf("%d\n",i);
                     printogrenci(&ogr[i]);
                 }
             }
