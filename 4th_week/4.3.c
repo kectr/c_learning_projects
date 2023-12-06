@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 
-double gpa(double mid1,double final1,double mid2,double final2){
-	return (mid1 + mid2 + final1 + final2)/4.0;
+double gpa(double mid1,double final1){
+	return (mid1+ final1)/50.0;
 }
 
 int main(){
@@ -17,7 +17,8 @@ int main(){
 		scanf("%lf",&mid2);
 		printf("Enter %d. students 2. courses final grade:",i);
 		scanf("%lf",&final2);
-		printf("%d. students gpa is %lf\n",i,gpa(mid1,final1,mid2,final2));		
+		printf("%d. students 1. courses gpa is %lf\n",i,gpa(mid1,final1));
+		printf("%d. students 2. courses gpa is %lf\n",i,gpa(mid2,final2));				
 	}
 	
 	
