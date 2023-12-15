@@ -18,6 +18,6 @@ double hard_integral_of_f(double xi,double xf,int n,int type){
 
 
 int main(){
-	printf("%lf",hard_integral_of_f(0,2,10000000,1));
+	printf("%lf",hard_integral_of_f(0,2,100000000,1));
 	
 }
