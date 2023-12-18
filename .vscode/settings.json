@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "2WEEK.C": "cpp"
+        "2WEEK.C": "cpp",
+        "iostream": "cpp"
     }
 }
