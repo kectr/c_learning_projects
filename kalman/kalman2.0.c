@@ -3,7 +3,6 @@
 #include <time.h>
 
 
-
 float kalman(float sensorx, float beta, float alfa ,float dt){
     static float ain = 0;
     static float vin = 0;
@@ -39,10 +38,5 @@ int main(){
         printf("%f - %f - %f - %f\n",array1[i%10],array2[i%10],array3[i],array3[i]-array1[i%10]);
 
     }
-
-    
-    
     return 0;
-
-
 }
