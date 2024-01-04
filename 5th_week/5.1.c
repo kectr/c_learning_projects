@@ -15,7 +15,7 @@ int main(){
         sum += array[i];
     }
 
-    printf("%lf",sum/lenght);
+    printf("Avarage is %lf",sum/lenght);
     
     return 0;
 }
