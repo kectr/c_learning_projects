@@ -18,6 +18,6 @@ int main(){
     }
 
     int mid = lenght/2;
-    printf("%lf",array[mid]+array[mid+1],array[mid-1]);
+    printf("Sum of middle tree elements is %lf",array[mid]+array[mid+1]+array[mid-1]);
 
 }
