@@ -1,10 +1,11 @@
 #include <iostream>
+#include <cstdint>
 using namespace std;
 
 uint8_t readBit(uint8_t value, uint8_t position);
 void writeBit(uint8_t *byteAdr, uint8_t position, uint8_t value);
 
-class screen
+class classScreen
 {
 private:
 public:
@@ -13,54 +14,40 @@ public:
     uint8_t height;
     uint8_t *array;
 
-    screen(uint8_t x,uint8_t y,uint8_t fill_option);
-    //screen(uint8_t x,uint8_t y);
+    classScreen(uint8_t x, uint8_t y, uint8_t fill_option);
+    ~classScreen();
 
     void print();
-    class draw;
-    
-};
 
-class draw:public screen
-{
-public:
-    draw();
-    void write_to_cordinate(uint8_t x,uint8_t y,uint8_t value);
-    void draw_line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,uint8_t value);  
     void fill(uint8_t choice);
+    void write_to_cordinate(uint8_t x, uint8_t y, uint8_t value);
+    void draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value);
+    void draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0);
+
 };
 
-
-
-screen::screen(uint8_t x,uint8_t y,uint8_t fill_option)
+classScreen::classScreen(uint8_t x, uint8_t y, uint8_t fill_option)
 {
     width = x;
     height = y;
-    width_8 = width/8;
-    array = (uint8_t *)malloc(width * height / 8);
-    screen::draw::fill(fill_option);
-}
-/*
-screen::screen(uint8_t x,uint8_t y)
-{   
-    printf("\n%d-%d\n",x,y);
-    width = x;
-    height = y;
-    uint8_t fill_option = 0x00;
-    array = (uint8_t *)malloc(width * height / 8);
+    width_8 = width / 8;
+    array = new uint8_t[width_8 * height];
     fill(fill_option);
-    
 }
-*/
-void screen::print()
+
+classScreen::~classScreen()
 {
-    for (int8_t j = height-1; j>=0; j--)
+    delete[] array;
+}
+
+void classScreen::print()
+{
+    for (int8_t j = height - 1; j >= 0; j--)
     {
         for (int8_t i = 0; i < width_8; i++)
         {
             for (int8_t k = 7; k >= 0; k--)
             {
-                // cout << readBit(array[i + j * width / 8], k);
                 printf("%d", readBit(array[i + j * width / 8], k));
             }
             cout << " ";
@@ -71,7 +58,7 @@ void screen::print()
          << endl;
 }
 
-void draw::fill(uint8_t fill_option)
+void classScreen::fill(uint8_t fill_option)
 {
     for (int8_t j = 0; j < height; j++)
     {
@@ -82,13 +69,52 @@ void draw::fill(uint8_t fill_option)
     }
 }
 
-void draw::write_to_cordinate(uint8_t x,uint8_t y,uint8_t value)
+void classScreen::write_to_cordinate(uint8_t x, uint8_t y, uint8_t value)
 {
-    //Assuming that 0,0 is the bottom left of the screen this will change only the memory layout
-    writeBit(&array[y*width_8+x/8],7-(x%8),value);
+    // Assuming that 0,0 is the bottom left of the classScreen this will change only the memory layout
+    writeBit(&array[y * width_8 + x / 8], 7 - (x % 8), value);
 }
 
-void draw::draw_line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,uint8_t value){
+//IF points those are not in same x nor y is given then function will draw a rectangle
+void classScreen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value)
+{
+    if (x1 == x2)
+    {
+        if (y1 > y2)
+        {
+            uint8_t temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
+        for(;y1<=y2;y1++)
+        {
+            write_to_cordinate(x1,y1,value);
+        }
+    }
+    else if (y1 == y2)
+    {   
+        if (x1 > x2)
+        {
+            uint8_t temp = x1;
+            x1 = x2;
+            x2 = temp;
+        }
+        for(;x1<=x2;x1++)
+        {
+            write_to_cordinate(x1,y1,value);
+        }
+
+    }
+    else
+    {
+        draw_line(x1,y1,x2,y1,value);
+        draw_line(x1,y1,x1,y2,value);
+        draw_line(x2,y2,x2,y1,value);
+        draw_line(x2,y2,x1,y2,value);
+    }
+}
+
+void classScreen::draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0){
 
 }
 
@@ -104,8 +130,7 @@ void writeBit(uint8_t *byteAdr, uint8_t position, uint8_t value)
 
 int main()
 {
-    screen sc(32,16,0x00);
-    sc.draw.write_to_cordinate(0,0,1);
-    
-    
+    classScreen sc(32, 16, 0x00);
+    sc.draw_line(0,0,31,15,1);
+    sc.print();
 }
