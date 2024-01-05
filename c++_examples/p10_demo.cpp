@@ -22,7 +22,7 @@ public:
     void fill(uint8_t choice);
     void write_to_cordinate(uint8_t x, uint8_t y, uint8_t value);
     void draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value);
-    void draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0);
+    //void draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0);
 
 };
 
@@ -114,9 +114,7 @@ void classScreen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint
     }
 }
 
-void classScreen::draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0){
 
-}
 
 uint8_t readBit(uint8_t value, uint8_t position)
 {
@@ -132,5 +130,8 @@ int main()
 {
     classScreen sc(32, 16, 0x00);
     sc.draw_line(0,0,31,15,1);
+    
+    sc.write_to_cordinate(3,4,1);
+    sc.write_to_cordinate(0,0,0);//çöz
     sc.print();
 }
