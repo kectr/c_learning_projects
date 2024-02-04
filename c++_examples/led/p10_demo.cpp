@@ -1,15 +1,10 @@
 #include <iostream>
 #include <cstdint>
+#include "byte_operations.h"
 using namespace std;
 #define byte uint8_t
 
-uint8_t readBit(uint8_t value, uint8_t position);
-void writeBit(uint8_t *byteAdr, uint8_t position, uint8_t value);
-void setBit(uint8_t *byteAdr, uint8_t position);
-void clearBit(uint8_t *byteAdr, uint8_t position);
-void toggleBit(uint8_t *byteAdr, uint8_t position);
-
-class classScreen
+class Screen
 {
 private:
 public:
@@ -18,8 +13,8 @@ public:
     uint8_t height;
     uint8_t *array;
 
-    classScreen(uint8_t x, uint8_t y, uint8_t fill_option);
-    ~classScreen();
+    Screen(uint8_t x, uint8_t y, uint8_t fill_option);
+    ~Screen();
 
     void print();
 
@@ -30,7 +25,7 @@ public:
     void draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value);
 };
 
-classScreen::classScreen(uint8_t x, uint8_t y, uint8_t fill_option)
+Screen::Screen(uint8_t x, uint8_t y, uint8_t fill_option)
 {
     width = x;
     height = y;
@@ -39,12 +34,12 @@ classScreen::classScreen(uint8_t x, uint8_t y, uint8_t fill_option)
     fill(fill_option);
 }
 
-classScreen::~classScreen()
+Screen::~Screen()
 {
     delete[] array;
 }
 
-void classScreen::print()
+void Screen::print()
 {
     for (int8_t j = height - 1; j >= 0; j--)
     {
@@ -62,7 +57,7 @@ void classScreen::print()
          << endl;
 }
 
-void classScreen::fill(uint8_t fill_option)
+void Screen::fill(uint8_t fill_option)
 {
     for (int8_t j = 0; j < height; j++)
     {
@@ -73,14 +68,13 @@ void classScreen::fill(uint8_t fill_option)
     }
 }
 
-void classScreen::write_to_cordinate(uint8_t x, uint8_t y, uint8_t value)
+void Screen::write_to_cordinate(uint8_t x, uint8_t y, uint8_t value)
 {
-    // Assuming that 0,0 is the bottom left of the classScreen this will change only the memory layout
     writeBit(&array[y * width_8 + x / 8], 7 - (x % 8), value);
 }
 
 // If points those are not in same x nor y is given then function will draw a rectangle
-void classScreen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value)
+void Screen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value)
 {
     if (x1 == x2)
     {
@@ -117,22 +111,7 @@ void classScreen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint
     }
 }
 
-void classScreen::draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0){
-    uint8_t shape_x_8 = (shape_x+7)/8;
-    if(shape_x+x1>width){
-        //limit array
-    }
-    if(shape_y+y1>height){
-        //limit array
-    }
-    if(reverse){
-        //(bit ^ reverse)will reverse;
-    }else{
-        //draw shape to array
-    }
-}
-
-void classScreen::draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value){
+void Screen::draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value){
     uint8_t dx = (y2-y1);
     uint8_t dy = (x2-x1);
     if(dx>dy){
@@ -140,38 +119,9 @@ void classScreen::draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, 
     }
 }
 
-//Bitwise operations
-
-void setBit(uint8_t *byteAdr, uint8_t position)
-{
-    *byteAdr |= 0x01 << position;
-}
-
-void clearBit(uint8_t *byteAdr, uint8_t position)
-{
-    *byteAdr &= ~(0x01 << position);
-}
-
-void toggleBit(uint8_t *byteAdr, uint8_t position)
-{
-    *byteAdr ^= 0x01 << position;
-}
-
-uint8_t readBit(uint8_t value, uint8_t position)
-{
-    return (value >> position) & 1;
-}
-
-void writeBit(uint8_t *byteAdr, uint8_t position, uint8_t value)
-{
-    (value ? setBit(byteAdr, position) : clearBit(byteAdr, position));
-}
-
-
-
 int main()
 {
-    classScreen sc(32, 16, 0xff);
+    Screen sc(32, 16, 0xff);
     sc.draw_line(0, 0, 31, 15, 1);
 
     sc.write_to_cordinate(3, 4, 1);
