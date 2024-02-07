@@ -1,35 +1,10 @@
-#include <iostream>
-#include <cstdint>
-#include "byte_operations.h"
-using namespace std;
-#define byte uint8_t
-
-class Screen
-{
-private:
-public:
-    uint8_t width;
-    uint8_t width_8;
-    uint8_t height;
-    uint8_t *array;
-
-    Screen(uint8_t x, uint8_t y, uint8_t fill_option);
-    ~Screen();
-
-    void print();
-
-    void fill(uint8_t choice);
-    void write_to_cordinate(uint8_t x, uint8_t y, uint8_t value);
-    void draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value);
-    void draw_shape(uint8_t x1,uint8_t y1,uint8_t* shape,uint8_t shape_x,uint8_t shape_y,uint8_t reverse = 0);
-    void draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value);
-};
+#include "screen.h"
 
 Screen::Screen(uint8_t x, uint8_t y, uint8_t fill_option)
 {
     width = x;
     height = y;
-    width_8 = (width+7) / 8;
+    width_8 = (width + 7) / 8;
     array = new uint8_t[width_8 * height];
     fill(fill_option);
 }
@@ -47,7 +22,7 @@ void Screen::print()
         {
             for (int8_t k = 7; k >= 0; k--)
             {
-                printf("%d", readBit(array[i + j * width / 8], k));
+                printf("%d", readBit(array[i + j * width_8], k));
             }
             cout << " ";
         }
@@ -111,20 +86,34 @@ void Screen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t v
     }
 }
 
-void Screen::draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value){
-    uint8_t dx = (y2-y1);
-    uint8_t dy = (x2-x1);
-    if(dx>dy){
-
-    }
-}
-
-int main()
+void Screen::draw_shape(uint8_t x1, uint8_t y1, const uint8_t *shape, uint8_t shape_x, uint8_t shape_y)
 {
-    Screen sc(32, 16, 0xff);
-    sc.draw_line(0, 0, 31, 15, 1);
+    uint8_t endx = x1 + shape_x -1;
+    uint8_t endy = y1 - shape_y -1;
+    uint8_t shape_x_8 = shape_x / 8;
 
-    sc.write_to_cordinate(3, 4, 1);
-    sc.write_to_cordinate(0, 0, 0); // çözüldü
-    sc.print();
+    if (endx >= Screen::width)
+    {
+        endx = Screen::width - 1;
+    }
+
+    if (endy < 0)
+    {
+        endy = 0;
+    }
+
+    int8_t i = 0;
+    int8_t j = 0;
+
+    for (; y1 > endy; y1--)
+    {
+        i = 0;
+        for (uint8_t x = x1; x < endx; x++)
+        {
+            Screen::write_to_cordinate(x, y1, readBit(shape[i / 8 + j * shape_x_8], i % 8));
+            i++;
+        }
+
+        j++;
+    }
 }

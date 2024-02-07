@@ -1,4 +1,4 @@
-#include "byte_operations.h"
+#include <cstdint>
 
 void setBit(uint8_t *byteAdr, uint8_t position)
 {
