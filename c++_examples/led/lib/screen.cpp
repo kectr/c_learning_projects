@@ -14,6 +14,7 @@ Screen::~Screen()
     delete[] array;
 }
 
+// Prints screen to terminal
 void Screen::print()
 {
     for (int8_t j = height - 1; j >= 0; j--)
@@ -32,6 +33,7 @@ void Screen::print()
          << endl;
 }
 
+// Fills whole screen with byte ex 0xff
 void Screen::fill(uint8_t fill_option)
 {
     for (int8_t j = 0; j < height; j++)
@@ -43,6 +45,7 @@ void Screen::fill(uint8_t fill_option)
     }
 }
 
+// Writes to point x,y a value
 void Screen::write_to_cordinate(uint8_t x, uint8_t y, uint8_t value)
 {
     writeBit(&array[y * width_8 + x / 8], 7 - (x % 8), value);
@@ -51,6 +54,11 @@ void Screen::write_to_cordinate(uint8_t x, uint8_t y, uint8_t value)
 // If points those are not in same x nor y is given then function will draw a rectangle
 void Screen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value)
 {
+    if (x1 >= width || x2 >= width || y1 >= height || y2 >= height || x1 < 0 || x2 < 0 || y1 < 0 || y2 < 0)
+    {
+        return;
+    }
+
     if (x1 == x2)
     {
         if (y1 > y2)
@@ -86,34 +94,109 @@ void Screen::draw_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t v
     }
 }
 
-void Screen::draw_shape(uint8_t x1, uint8_t y1, const uint8_t *shape, uint8_t shape_x, uint8_t shape_y)
+// Draws traverse with DDA
+void Screen::draw_traverse(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t value)
 {
-    uint8_t endx = x1 + shape_x -1;
-    uint8_t endy = y1 - shape_y -1;
-    uint8_t shape_x_8 = shape_x / 8;
+    int8_t dx = x2 - x1;
+    int8_t dy = y2 - y1;
 
-    if (endx >= Screen::width)
+    int8_t steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+
+    float xIncrement = static_cast<float>(dx) / static_cast<float>(steps);
+    float yIncrement = static_cast<float>(dy) / static_cast<float>(steps);
+
+    float x = x1;
+    float y = y1;
+
+    for (int i = 0; i <= steps; ++i)
     {
-        endx = Screen::width - 1;
+        write_to_cordinate(static_cast<uint8_t>(x), static_cast<uint8_t>(y), value);
+        x += xIncrement;
+        y += yIncrement;
+    }
+}
+
+// Reads a value from point x,y
+uint8_t Screen::read_cordinate(uint8_t x, uint8_t y)
+{
+    return readBit(array[x / 8 + y * width_8], 7 - (x % 8));
+}
+
+// Moves a point from x1,y1 to x2,y2.
+void Screen::move_cordinate(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t copy, uint8_t shadow)
+{
+    write_to_cordinate(x2, y2, read_cordinate(x1, y1));
+    printf("%x", copy);
+    if (!copy)
+    {
+        write_to_cordinate(x1, y1, shadow);
+    }
+}
+
+// Moves x1,y1;x2,y2 area to x3,y3 if you selelct copy it will not change area you are copying but id you selelct copy 0 it will apply a shadow
+void Screen::move_area(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t x3, uint8_t y3, uint8_t copy, uint8_t shadow)
+{
+    if (y1 > y2)
+    {
+        uint8_t temp = y1;
+        y1 = y2;
+        y2 = temp;
+    }
+    if (x1 > x2)
+    {
+        uint8_t temp = x1;
+        x1 = x2;
+        x2 = temp;
     }
 
-    if (endy < 0)
+    uint8_t i = 0;
+    uint8_t j = 0;
+
+    if (width - x3 - 1 < x2 - x1)
     {
-        endy = 0;
+        x2 = x1 + width - 1 - x3;
     }
 
-    int8_t i = 0;
-    int8_t j = 0;
-
-    for (; y1 > endy; y1--)
+    if (height - y3 - 1 < y2 - y1)
     {
-        i = 0;
-        for (uint8_t x = x1; x < endx; x++)
+        y2 = y1 + height - 1 - y3;
+    }
+
+    for (; y1 <= y2; y1++)
+    {
+        for (; x1 <= x2; x1++)
         {
-            Screen::write_to_cordinate(x, y1, readBit(shape[i / 8 + j * shape_x_8], i % 8));
+            move_cordinate(x1, y1, x3 + i, y3 + j, copy, shadow);
             i++;
         }
-
         j++;
     }
+}
+
+//Row major,big endian
+void Screen::draw_shape(uint8_t x1, uint8_t y1, const uint8_t *shape, uint8_t shape_width, uint8_t shape_height)
+{   
+    uint8_t y2 = shape_height + y1 - 1;
+    
+    if (width - x1 - 1 < shape_width)
+    {
+        shape_width = width - x1;
+    }
+    if (height - y1 - 1 < shape_height)
+    {
+        shape_height = height - y1;
+    }
+
+    uint8_t i = 0, j = 0;
+    uint8_t shape_width_8 = (shape_width + 7) / 8;
+    uint8_t y2 = shape_height + y1 - 1;
+
+    for (; j < shape_height; j++)
+    {
+        for (i = 0; i < shape_width; i++)
+        {
+            write_to_cordinate(x1 + i, y2 - j, readBit(shape[i / 8 + j * shape_width_8], 7 - (i % 8)));
+        }
+    }
+    printf("\n");
 }
