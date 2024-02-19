@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "2WEEK.C": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "cstdint": "cpp",
+        "compare": "cpp"
     }
 }
