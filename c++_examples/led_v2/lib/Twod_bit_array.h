@@ -26,9 +26,14 @@ public:
     ~Twod_bit_array();
 
     uint8_t read(cordinate read_cordinate);
+
     void write(cordinate to_crd,uint8_t value);
+
     uint8_t in_data_byte_index(cordinate find_crd);
+
     uint8_t* byte_address(cordinate find_crd);
+
+    void copy(cordinate start_left_bot, class Twod_bit_array from_arr);
 
     void print();
 
@@ -37,3 +42,5 @@ public:
 };
 
 uint8_t in_byte_index(int16_t x);
+
+uint8_t is_contains_negative(cordinate cord);
